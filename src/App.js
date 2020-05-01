@@ -12,30 +12,36 @@ import { ProductContext } from "./contexts/ProductContext";
 import { CartContext } from "./contexts/CartContext";
 
 function App() {
-  const [products] = useState(data);
+  const [products, setProducts] = useState(data);
   const [cart, setCart] = useState([]);
 
   const addItem = (item) => {
     // add the given item to the cart
-    products.map((item) => setCart(cart + item));
+    setCart([...cart, item]);
   };
-
+  const removeItem = (id) => {
+    setCart(
+      cart.filter((item) => {
+        return item.id !== id;
+      })
+    );
+  };
   return (
     <div className="App">
-      <ProductContext.Provider value={{ products, addItem }} />
-      <CartContext.Provder value={cart} />
-      <Navigation />
+      <ProductContext.Provider value={{ products, addItem }}>
+        <CartContext.Provider value={{ cart, removeItem }}>
+          <Navigation />
 
-      {/* Routes */}
-      <Route exact path="/">
-        <Products />
-      </Route>
+          {/* Routes */}
+          <Route exact path="/">
+            <Products />
+          </Route>
 
-      <Route path="/cart">
-        <ShoppingCart />
-      </Route>
-      <CartContext.Provder />
-      <ProductContext.Provider />
+          <Route path="/cart">
+            <ShoppingCart />
+          </Route>
+        </CartContext.Provider>
+      </ProductContext.Provider>
     </div>
   );
 }
